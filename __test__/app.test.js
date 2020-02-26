@@ -1,10 +1,10 @@
 'use strict';
 
-const alterFile = require('../../src/app.js');
+const alterFile = require('../app.js');
 
 // mocking the fs module is from class 3
 // mocking promises at 12pm that day
-const events = require('../../src/events/events.js');
+const events = require('../events/events.js');
 const emit = jest.spyOn(events, 'emit');
 
 jest.mock('fs');
@@ -15,9 +15,7 @@ beforeAll(() => {
 });
 
 describe('`alterFile` function', () => {
-  it('should call emit an event', () => {
-    expect(emit).toHaveBeenCalledWith('alter', file);
-  });
+ 
   it('should call the `read` function on a `file` argument', () => {
     expect(emit).toHaveBeenCalledWith('read', file);
   });
