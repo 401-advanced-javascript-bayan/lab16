@@ -1,17 +1,26 @@
 'use strict';
 
-const fs = require('fs');
+const events = require('./events/events.js');
+require('./events/logger.js');
 
-const alterFile = (file) => {
-  fs.readFile( file, (err, data) => {
-    if(err) { throw err; }
-    let text = data.toString().toUpperCase();
-    fs.writeFile( file, Buffer.from(text), (err, data) => {
-      if(err) { throw err; }
-      console.log(`${file} saved`);
-    });
-  });
+const read = require('./lib/read.js');
+const uppercase = require('./lib/uppercase.js');
+const write = require('./lib/write.js');
+
+/**
+ * @function
+ * @name alterFile
+ * @param file {path} The path to a file on the filesystem
+ */
+const alterFile = async file => {
+  try {
+    const buffer = await read(file);
+    const modified = await uppercase(buffer);
+    write(file, modified);
+    events.emit('alter', file);
+  } catch (err) {
+    events.emit('error', file);
+  }
 };
 
-let file = process.argv.slice(2).shift();
-alterFile(file);
+module.exports = alterFile;
